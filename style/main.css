@@ -1,0 +1,39 @@
+* { -webkit-tap-highlight-color: transparent; }
+body {
+  background:
+    radial-gradient(120% 55% at 100% 0%, #DCEAFF 0%, transparent 60%),
+    radial-gradient(90% 45% at 0% 100%, #EAF0FF 0%, transparent 60%), #F7F9FD;
+}
+.page { animation: pageIn .35s cubic-bezier(.22,.8,.24,1); }
+@keyframes pageIn { from { opacity: 0; transform: translateY(10px); } }
+
+/* task card motion */
+.task-wrap { margin-bottom: 10px; transition: all .35s cubic-bezier(.4,0,.2,1); overflow: hidden; }
+.task-wrap.card-in { animation: cardIn .5s cubic-bezier(.22,.8,.24,1); }
+@keyframes cardIn { from { opacity: 0; transform: translateY(-14px) scale(.95); } }
+.task-wrap.card-out { opacity: 0; transform: translateX(56px) scale(.96); max-height: 0 !important; margin-bottom: 0; }
+
+/* check button */
+.chk { border: 2px solid #CBD5E1; transition: all .25s; }
+.chk svg { opacity: 0; transform: scale(.3); transition: all .25s; }
+.chk.checked { border-color: transparent; background: linear-gradient(135deg,#60A5FA,#4F46E5); animation: pop .35s; }
+.chk.checked svg { opacity: 1; transform: scale(1); }
+@keyframes pop { 50% { transform: scale(1.25); } }
+
+/* charts */
+.arc { animation: draw 1s cubic-bezier(.22,.8,.24,1) both; }
+@keyframes draw { from { stroke-dasharray: 0 999; } }
+.area { animation: fade .9s ease both; }
+@keyframes fade { from { opacity: 0; } }
+
+/* nav */
+.nav-ind { transition: transform .4s cubic-bezier(.22,.8,.24,1); }
+.nav-button { color: #94A3B8; transition: color .2s, transform .2s; }
+.nav-button.active { color: #2563EB; }
+.nav-button:active { transform: scale(.93); }
+
+/* toast */
+#toast { opacity: 0; transform: translateY(16px); pointer-events: none; transition: all .3s; }
+#toast.show { opacity: 1; transform: none; pointer-events: auto; }
+
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

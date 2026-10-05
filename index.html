@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Todo List</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  fontFamily: { sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
+  boxShadow: { soft: '0 6px 24px rgba(30,50,90,.06)', float: '0 10px 28px rgba(15,23,42,.22)' }
+} } };
+</script>
+<link rel="stylesheet" href="style/main.css">
+</head>
+
+<body class="min-h-screen font-sans text-slate-800">
+
+<!-- shared gradients for the charts -->
+<svg width="0" height="0" class="absolute" aria-hidden="true"><defs>
+  <linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#60A5FA"/><stop offset="1" stop-color="#4F46E5"/></linearGradient>
+  <linearGradient id="gFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#60A5FA" stop-opacity=".35"/><stop offset="1" stop-color="#60A5FA" stop-opacity="0"/></linearGradient>
+</defs></svg>
+
+<main class="mx-auto min-h-screen w-full max-w-md px-4 pb-32 pt-6">
+
+  <!-- HOME -->
+  <section id="home-page" class="page space-y-5">
+    <header class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="grid h-11 w-11 place-items-center rounded-full bg-gradient-to-br from-sky-400 to-indigo-500 text-sm font-bold text-white ring-4 ring-white">MF</div>
+        <div>
+          <p id="greeting" class="text-xs text-slate-400">Good Morning</p>
+          <h1 class="text-[15px] font-bold leading-tight">Muhamad Fahmi</h1>
+        </div>
+      </div>
+      <span id="today-date" class="rounded-full bg-white px-3 py-1.5 text-[11px] font-semibold text-slate-500 shadow-soft"></span>
+    </header>
+
+    <section id="hero"></section>
+
+    <button type="button" onclick="showAddTask()" class="flex w-full items-center gap-3 rounded-full bg-white py-2 pl-2 pr-5 text-left shadow-soft ring-1 ring-slate-100 transition active:scale-[.98]">
+      <span class="grid h-9 w-9 place-items-center rounded-full bg-slate-900 text-lg text-white">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      </span>
+      <span class="text-sm text-slate-400">What needs to be done?</span>
+    </button>
+
+    <section>
+      <div class="mb-3 flex items-center justify-between">
+        <h2 class="text-lg font-bold tracking-tight">My tasks <span id="pending-chip" class="ml-1 rounded-full bg-blue-50 px-2 py-0.5 align-middle text-[11px] font-semibold text-blue-600">0</span></h2>
+        <button id="delete-all-button" type="button" class="rounded-full px-3 py-1 text-xs font-semibold text-slate-400 transition hover:bg-rose-50 hover:text-rose-500 active:scale-95">Delete all</button>
+      </div>
+      <div id="todo-list"></div>
+    </section>
+  </section>
+
+  <!-- ADD -->
+  <section id="add-task-page" class="page hidden space-y-5">
+    <div>
+      <p class="text-xs text-slate-400">Create something new</p>
+      <h1 class="text-2xl font-extrabold tracking-tight">Add task</h1>
+    </div>
+
+    <form id="task-form" autocomplete="off" class="space-y-6 rounded-[32px] bg-white p-5 shadow-soft ring-1 ring-slate-100">
+      <div>
+        <div class="mb-2 flex items-center justify-between">
+          <label for="task-input" class="text-sm font-semibold">Task</label>
+          <span id="character-count" class="text-[11px] text-slate-400">0/200</span>
+        </div>
+        <textarea id="task-input" maxlength="200" rows="4" required placeholder="Write your task here…"
+          class="w-full resize-none rounded-3xl bg-slate-50 px-4 py-3.5 text-sm outline-none ring-1 ring-slate-100 transition placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-blue-300"></textarea>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-semibold">Priority</p>
+        <div class="grid grid-cols-3 gap-2">
+          <div><input type="radio" id="low" name="priority" value="low" class="peer sr-only" checked>
+            <label for="low" class="flex cursor-pointer justify-center rounded-full bg-slate-50 py-2.5 text-xs font-semibold text-slate-400 ring-1 ring-slate-100 transition peer-checked:bg-slate-800 peer-checked:text-white">Low</label></div>
+          <div><input type="radio" id="medium" name="priority" value="medium" class="peer sr-only">
+            <label for="medium" class="flex cursor-pointer justify-center rounded-full bg-slate-50 py-2.5 text-xs font-semibold text-slate-400 ring-1 ring-slate-100 transition peer-checked:bg-blue-500 peer-checked:text-white">Medium</label></div>
+          <div><input type="radio" id="high" name="priority" value="high" class="peer sr-only">
+            <label for="high" class="flex cursor-pointer justify-center rounded-full bg-slate-50 py-2.5 text-xs font-semibold text-slate-400 ring-1 ring-slate-100 transition peer-checked:bg-rose-400 peer-checked:text-white">High</label></div>
+        </div>
+      </div>
+
+      <div>
+        <label for="due-date" class="mb-2 block text-sm font-semibold">Deadline</label>
+        <div class="mb-2 flex gap-2">
+          <button type="button" onclick="quickDue(0)" class="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-600 active:scale-95">Today</button>
+          <button type="button" onclick="quickDue(1)" class="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-600 active:scale-95">Tomorrow</button>
+          <button type="button" onclick="quickDue(7)" class="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-600 active:scale-95">Next week</button>
+        </div>
+        <input id="due-date" type="datetime-local" required
+          class="w-full rounded-full bg-slate-50 px-4 py-3 text-sm text-slate-600 outline-none ring-1 ring-slate-100 transition focus:bg-white focus:ring-2 focus:ring-blue-300">
+      </div>
+
+      <button type="submit" class="w-full rounded-full bg-slate-900 py-3.5 text-sm font-semibold text-white shadow-float transition active:scale-[.98]">Add task</button>
+    </form>
+  </section>
+
+  <!-- DONE -->
+  <section id="done-page" class="page hidden space-y-5">
+    <div>
+      <p class="text-xs text-slate-400">Completed work</p>
+      <h1 class="text-2xl font-extrabold tracking-tight">Done</h1>
+    </div>
+    <div id="done-list"></div>
+  </section>
+
+  <!-- OVERDUE -->
+  <section id="overdue-page" class="page hidden space-y-5">
+    <div>
+      <p class="text-xs text-slate-400">Needs your attention</p>
+      <h1 class="text-2xl font-extrabold tracking-tight">Overdue</h1>
+    </div>
+    <div id="overdue-banner"></div>
+    <div id="overdue-list"></div>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="profile-page" class="page hidden space-y-5">
+    <div>
+      <p class="text-xs text-slate-400">Personal information</p>
+      <h1 class="text-2xl font-extrabold tracking-tight">Profile</h1>
+    </div>
+    <div id="profile-body" class="space-y-4"></div>
+  </section>
+</main>
+
+<!-- TOAST -->
+<div id="toast" class="fixed inset-x-0 bottom-24 z-[60] mx-auto flex w-[calc(100%-2rem)] max-w-sm items-center justify-between rounded-full bg-slate-900 py-2 pl-5 pr-2 text-sm text-white shadow-float">
+  <span id="toast-msg"></span>
+  <button type="button" onclick="undo()" class="rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold active:scale-95">Undo</button>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="fixed inset-x-0 bottom-0 z-50 rounded-t-[28px] bg-white/90 px-2 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(30,50,90,.08)] backdrop-blur-xl">
+  <div class="relative mx-auto grid max-w-md grid-cols-5 items-center py-2">
+    <div id="nav-ind" class="nav-ind absolute left-0 top-0 flex w-1/5 justify-center"><span class="h-[3px] w-6 rounded-b-full bg-gradient-to-r from-sky-400 to-indigo-500"></span></div>
+
+    <button data-nav="home" onclick="showHome()" class="nav-button flex flex-col items-center gap-1 py-2 text-[10px] font-semibold">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>Home</button>
+
+    <button data-nav="done" onclick="showDone()" class="nav-button flex flex-col items-center gap-1 py-2 text-[10px] font-semibold">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>Done</button>
+
+    <button data-nav="add" onclick="showAddTask()" aria-label="Add task" class="nav-button flex justify-center">
+      <span class="-mt-6 grid h-[52px] w-[52px] place-items-center rounded-full bg-slate-900 text-2xl font-light text-white shadow-float ring-[5px] ring-white transition active:scale-90">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      </span>
+    </button>
+
+    <button data-nav="overdue" onclick="showOverdue()" class="nav-button relative flex flex-col items-center gap-1 py-2 text-[10px] font-semibold">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Overdue
+      <span id="nav-dot" class="absolute right-[26%] top-2 hidden h-2 w-2 rounded-full bg-rose-400 ring-2 ring-white"></span></button>
+
+    <button data-nav="profile" onclick="showProfile()" class="nav-button flex flex-col items-center gap-1 py-2 text-[10px] font-semibold">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>Profile</button>
+  </div>
+</nav>
+
+<script src="script/app.js"></script>
+</body>
+</html>
