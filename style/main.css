@@ -1,4 +1,5 @@
 * { -webkit-tap-highlight-color: transparent; }
+html { overflow-anchor: none; }
 body {
   background:
     radial-gradient(120% 55% at 100% 0%, #DCEAFF 0%, transparent 60%),
@@ -8,17 +9,34 @@ body {
 @keyframes pageIn { from { opacity: 0; transform: translateY(10px); } }
 
 /* task card motion */
-.task-wrap { margin-bottom: 10px; transition: all .35s cubic-bezier(.4,0,.2,1); overflow: hidden; }
+.task-wrap {
+  margin-bottom: 10px; overflow: hidden;
+  transition: opacity .3s, transform .3s cubic-bezier(.4,0,.2,1),
+              max-height .35s cubic-bezier(.4,0,.2,1), margin-bottom .35s;
+}
 .task-wrap.card-in { animation: cardIn .5s cubic-bezier(.22,.8,.24,1); }
 @keyframes cardIn { from { opacity: 0; transform: translateY(-14px) scale(.95); } }
 .task-wrap.card-out { opacity: 0; transform: translateX(56px) scale(.96); max-height: 0 !important; margin-bottom: 0; }
 
 /* check button */
-.chk { border: 2px solid #CBD5E1; transition: all .25s; }
-.chk svg { opacity: 0; transform: scale(.3); transition: all .25s; }
-.chk.checked { border-color: transparent; background: linear-gradient(135deg,#60A5FA,#4F46E5); animation: pop .35s; }
+.chk {
+  position: relative; flex-shrink: 0; margin-top: 2px;
+  width: 24px; height: 24px; padding: 0;
+  display: grid; place-items: center;
+  border-radius: 50%; border: 2px solid #CBD5E1; background: #fff;
+  transition: border-color .25s, transform .15s;
+}
+.chk:active { transform: scale(.9); }
+.chk::before {
+  content: ""; position: absolute; inset: -2px; border-radius: 50%;
+  background: linear-gradient(135deg, #60A5FA, #4F46E5);
+  transform: scale(0);
+  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+.chk svg { position: relative; display: block; opacity: 0; transform: scale(.3); transition: opacity .2s, transform .25s; }
+.chk.checked { border-color: transparent; }
+.chk.checked::before { transform: scale(1); }
 .chk.checked svg { opacity: 1; transform: scale(1); }
-@keyframes pop { 50% { transform: scale(1.25); } }
 
 /* charts */
 .arc { animation: draw 1s cubic-bezier(.22,.8,.24,1) both; }
@@ -27,10 +45,29 @@ body {
 @keyframes fade { from { opacity: 0; } }
 
 /* nav */
-.nav-ind { transition: transform .4s cubic-bezier(.22,.8,.24,1); }
-.nav-button { color: #94A3B8; transition: color .2s, transform .2s; }
+.bottom-nav { transform: translateZ(0); backface-visibility: hidden; }
+.nav-button { position: relative; z-index: 1; color: #94A3B8; transition: color .2s, transform .2s; }
 .nav-button.active { color: #2563EB; }
 .nav-button:active { transform: scale(.93); }
+
+.nav-pill {
+  position: absolute; top: 2px; bottom: 2px; left: 0; width: 20%; padding: 0 6px;
+  transition: transform .45s cubic-bezier(.22, .8, .24, 1), opacity .25s;
+  will-change: transform; pointer-events: none;
+}
+.nav-pill span { display: block; height: 100%; border-radius: 20px; background: #EAF1FF; }
+.nav-pill.off { opacity: 0; }
+.nav-pill.no-anim { transition: none; }
+
+.add-fab { transition: background .25s, transform .15s; }
+.nav-button.active .add-fab { background: linear-gradient(135deg, #60A5FA, #4F46E5); }
+
+.nav-avatar {
+  display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+  object-fit: cover; background: linear-gradient(135deg, #38BDF8, #6366F1);
+  color: #fff; font-size: 9px; font-weight: 700; transition: box-shadow .25s;
+}
+.nav-button.active .nav-avatar { box-shadow: 0 0 0 1.5px #fff, 0 0 0 3px #2563EB; }
 
 /* toast */
 #toast { opacity: 0; transform: translateY(16px); pointer-events: none; transition: all .3s; }

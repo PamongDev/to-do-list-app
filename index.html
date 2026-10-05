@@ -15,7 +15,7 @@ tailwind.config = { theme: { extend: {
 <link rel="stylesheet" href="style/main.css">
 </head>
 
-<body class="min-h-screen font-sans text-slate-800">
+<body class="min-h-[100dvh] font-sans text-slate-800">
 
 <!-- shared gradients for the charts -->
 <svg width="0" height="0" class="absolute" aria-hidden="true"><defs>
@@ -23,7 +23,7 @@ tailwind.config = { theme: { extend: {
   <linearGradient id="gFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#60A5FA" stop-opacity=".35"/><stop offset="1" stop-color="#60A5FA" stop-opacity="0"/></linearGradient>
 </defs></svg>
 
-<main class="mx-auto min-h-screen w-full max-w-md px-4 pb-32 pt-6">
+<main class="mx-auto min-h-[100dvh] w-full max-w-md px-4 pb-32 pt-6">
 
   <!-- HOME -->
   <section id="home-page" class="page space-y-5">
@@ -136,9 +136,9 @@ tailwind.config = { theme: { extend: {
 </div>
 
 <!-- BOTTOM NAV -->
-<nav class="fixed inset-x-0 bottom-0 z-50 rounded-t-[28px] bg-white/90 px-2 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(30,50,90,.08)] backdrop-blur-xl">
+<nav class="bottom-nav fixed inset-x-0 bottom-0 z-50 rounded-t-[28px] bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(30,50,90,.08)]">
   <div class="relative mx-auto grid max-w-md grid-cols-5 items-center py-2">
-    <div id="nav-ind" class="nav-ind absolute left-0 top-0 flex w-1/5 justify-center"><span class="h-[3px] w-6 rounded-b-full bg-gradient-to-r from-sky-400 to-indigo-500"></span></div>
+    <div id="nav-pill" class="nav-pill off"><span></span></div>
 
     <button data-nav="home" onclick="showHome()" class="nav-button flex flex-col items-center gap-1 py-2 text-[10px] font-semibold">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>Home</button>
@@ -147,17 +147,17 @@ tailwind.config = { theme: { extend: {
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>Done</button>
 
     <button data-nav="add" onclick="showAddTask()" aria-label="Add task" class="nav-button flex justify-center">
-      <span class="-mt-6 grid h-[52px] w-[52px] place-items-center rounded-full bg-slate-900 text-2xl font-light text-white shadow-float ring-[5px] ring-white transition active:scale-90">
+      <span class="add-fab -mt-6 grid h-[52px] w-[52px] place-items-center rounded-full bg-slate-900 text-white shadow-float ring-[5px] ring-white transition active:scale-90">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
       </span>
     </button>
 
-    <button data-nav="overdue" onclick="showOverdue()" class="nav-button relative flex flex-col items-center gap-1 py-2 text-[10px] font-semibold">
+    <button data-nav="overdue" onclick="showOverdue()" class="nav-button flex flex-col items-center gap-1 py-2 text-[10px] font-semibold">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Overdue
       <span id="nav-dot" class="absolute right-[26%] top-2 hidden h-2 w-2 rounded-full bg-rose-400 ring-2 ring-white"></span></button>
 
     <button data-nav="profile" onclick="showProfile()" class="nav-button flex flex-col items-center gap-1 py-2 text-[10px] font-semibold">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>Profile</button>
+      <span class="nav-avatar">MF</span>Profile</button>
   </div>
 </nav>
 

@@ -6,6 +6,7 @@ let tasks = loadTasks(), lastAdded = null, snapshot = null, toastTimer;
 const pages = { home: $("home-page"), done: $("done-page"), add: $("add-task-page"), overdue: $("overdue-page"), profile: $("profile-page") };
 const NAV = ["home", "done", "add", "overdue", "profile"];
 const taskForm = $("task-form"), taskInput = $("task-input"), dueInput = $("due-date");
+const pill = $("nav-pill");
 
 const PRI = {
   low:    { label: "Low",    cls: "bg-slate-100 text-slate-500", dot: "bg-slate-400" },
@@ -98,17 +99,10 @@ function weekChart() {
 // ===== RENDER =====
 function card(t) {
   const p = PRI[t.priority] || PRI.low, od = isOverdue(t);
-  
-  // Class CSS untuk tombol centang
-  const chkCls = t.completed 
-    ? "bg-emerald-500 border-emerald-500 text-white" 
-    : "border-slate-300 bg-white text-transparent hover:border-slate-400";
 
   return `<div class="task-wrap${t.id === lastAdded ? " card-in" : ""}" data-id="${t.id}">
   <article class="flex items-start gap-3 rounded-3xl bg-white p-4 shadow-soft ring-1 ring-slate-100">
-    <button type="button" onclick="toggleTask('${t.id}')" aria-label="Toggle done" class="chk ${t.completed ? "checked" : ""} ${chkCls} mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition-all overflow-hidden">
-      ${TICK}
-    </button>
+    <button type="button" onclick="toggleTask('${t.id}')" aria-label="Toggle done" class="chk ${t.completed ? "checked" : ""}">${TICK}</button>
     <div class="min-w-0 flex-1">
       <p class="break-words text-[14px] font-semibold leading-snug ${t.completed ? "text-slate-400 line-through" : "text-slate-800"}">${esc(t.title)}</p>
       <div class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px]">
@@ -202,11 +196,24 @@ function renderProfile() {
 }
 
 // ===== NAVIGATION =====
+function movePill(name) {
+  if (name === "add") return pill.classList.add("off");   // Add: pill hilang, cukup ganti warna tombol
+  const x = `translateX(${NAV.indexOf(name) * 100}%)`;
+  if (pill.classList.contains("off")) {                    // muncul lagi: loncat tanpa animasi, lalu fade in
+    pill.classList.add("no-anim");
+    pill.style.transform = x;
+    void pill.offsetWidth;
+    pill.classList.remove("no-anim", "off");
+  } else pill.style.transform = x;
+}
+
 function go(name) {
+  // sudah di form Add → klik lagi tidak melakukan apa-apa (form tidak ke-reset)
+  if (name === "add" && !pages.add.classList.contains("hidden")) return;
   NAV.forEach((n) => pages[n].classList.toggle("hidden", n !== name));
   renderAll();
   document.querySelectorAll(".nav-button").forEach((b) => b.classList.toggle("active", b.dataset.nav === name));
-  $("nav-ind").style.transform = `translateX(${NAV.indexOf(name) * 100}%)`;
+  movePill(name);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 const showHome = () => go("home"), showDone = () => go("done"), showOverdue = () => go("overdue"), showProfile = () => go("profile");
@@ -216,10 +223,15 @@ function showAddTask() { go("add"); setTimeout(() => taskInput.focus(), 250); }
 function animateOut(id, cb) {
   const el = document.querySelector(`[data-id="${id}"]`);
   if (!el) return cb();
+  const main = document.querySelector("main");
+  main.style.minHeight = main.offsetHeight + "px";   // tahan tinggi halaman selama animasi
   el.style.maxHeight = el.offsetHeight + "px";
   void el.offsetHeight;
   el.classList.add("card-out");
-  setTimeout(cb, 340);
+  setTimeout(() => {
+    cb();
+    requestAnimationFrame(() => (main.style.minHeight = ""));   // lepas sekali, tanpa animasi
+  }, 340);
 }
 
 function toggleTask(id) {
